@@ -8,6 +8,10 @@ export default {
         return x;
       });
       return result;
+    },
+    allPins: async (parent, args, { Pin }) => {
+      const pins = await Pin.find();
+      return pins;
     }
   },
   Mutation: {
@@ -15,6 +19,11 @@ export default {
       const kitty = await new Cat(args).save();
       kitty._id = kitty._id.toString();
       return kitty;
+    },
+    createPin: async (parent, args, { Pin }) => {
+      const pin = await Pin(args).save();
+      console.log(pin);
+      return pin;
     }
   }
 };

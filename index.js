@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 
 import typeDefs from "./schemas/test";
 import resolvers from "./resolvers/test";
+import Pin from "./Models/PinSchema";
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -25,7 +26,7 @@ const app = express();
 app.use(
   "/graphql",
   bodyParser.json(),
-  graphqlExpress({ schema, context: { Cat } })
+  graphqlExpress({ schema, context: { Cat, Pin } })
 );
 
 app.use(
