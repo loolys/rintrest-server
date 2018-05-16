@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 export default {
   Query: {
     allCats: async (parent, args, { Cat }) => {
@@ -24,6 +26,26 @@ export default {
       const pin = await Pin(args).save();
       console.log(pin);
       return pin;
+    },
+    createUser: async (parent, args, { User }) => {
+      console.log(args);
+      const newUser = new User(args);
+      const user = await newUser.save();
+      console.log(user);
+      return user;
+    },
+    loginUser: async (parent, { username, password }, { User }) => {
+      const user = await User.findOne({ username }, (err, user) => {
+        if (err) return false;
+      });
+
+      if (!user) return { success: false };
+
+      const validate = await bcrypt.compare(password, user.password);
+
+      return {
+        success: validate
+      };
     }
   }
 };
