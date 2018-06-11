@@ -4,6 +4,7 @@ import { graphqlExpress } from "apollo-server-express";
 import { makeExecutableSchema } from "graphql-tools";
 import { graphiqlExpress } from "apollo-server-express";
 import mongoose from "mongoose";
+require("dotenv/config");
 
 import typeDefs from "./schemas/test";
 import resolvers from "./resolvers/test";

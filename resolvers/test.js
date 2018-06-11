@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import decode from "jwt-decode";
 
 export default {
   Query: {
@@ -13,7 +15,17 @@ export default {
     },
     allPins: async (parent, args, { Pin }) => {
       const pins = await Pin.find();
-      return pins;
+      const result = pins.map(x => {
+        x._id = x._id.toString();
+        return x;
+      });
+      return result;
+    },
+    usersPins: async (parent, { header }, { Pin }) => {
+      const { username } = await decode(header);
+      console.log(username);
+      const result = await Pin.find({ user: username });
+      return result;
     }
   },
   Mutation: {
@@ -30,21 +42,85 @@ export default {
     createUser: async (parent, args, { User }) => {
       console.log(args);
       const newUser = new User(args);
-      const user = await newUser.save();
-      console.log(user);
-      return user;
+      try {
+        const user = await newUser.save();
+
+        return {
+          success: true,
+          username: user.username
+        };
+      } catch (err) {
+        return {
+          success: false,
+          username: "",
+          error: {
+            path: "Username",
+            message: "Username already exists"
+          }
+        };
+      }
+    },
+    likePin: async (parent, { username, id }, { Pin }) => {
+      const pin = await Pin.findById(id);
+      if (pin.likes.indexOf(username) === -1) {
+        return Pin.findByIdAndUpdate(
+          id,
+          {
+            $inc: { likeCount: 1 },
+            $push: { likes: username }
+          },
+          { new: true }
+        );
+      } else {
+        return Pin.findByIdAndUpdate(
+          id,
+          {
+            $inc: { likeCount: -1 },
+            $pull: { likes: username }
+          },
+          { new: true }
+        );
+      }
     },
     loginUser: async (parent, { username, password }, { User }) => {
       const user = await User.findOne({ username }, (err, user) => {
         if (err) return false;
       });
 
-      if (!user) return { success: false };
+      if (!user)
+        return {
+          success: false,
+          error: {
+            path: "User",
+            message: "Username Not Found"
+          }
+        };
 
       const validate = await bcrypt.compare(password, user.password);
 
+      if (!validate) {
+        return {
+          success: false,
+          error: {
+            path: "Password",
+            message: "Invalid Password"
+          }
+        };
+      }
+
+      const token = jwt.sign(
+        {
+          id: user._id,
+          username: user.username
+        },
+        process.env.SECRET
+      );
+
+      console.log(token);
+
       return {
-        success: validate
+        success: validate,
+        token
       };
     }
   }
