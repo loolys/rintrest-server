@@ -47,7 +47,9 @@ var schema = (0, _graphqlTools.makeExecutableSchema)({
   resolvers: _test4.default
 });
 
-_mongoose2.default.connect("mongodb://localhost/rintrest");
+var connectString = process.env.MONGODB_URI || "mongodb://localhost/rintrest";
+
+_mongoose2.default.connect(connectString);
 
 var Cat = _mongoose2.default.model("Cat", { name: String });
 

@@ -34,5 +34,8 @@
     "jsonwebtoken": "^8.2.1",
     "jwt-decode": "^2.2.0",
     "mongoose": "^5.1.1"
+  },
+  "engines": {
+    "node": "8.6.0"
   }
 }
