@@ -22,8 +22,7 @@ export default {
       return result;
     },
     usersPins: async (parent, { header }, { Pin }) => {
-      const { username } = await decode(header);
-      console.log(username);
+      const username = header;
       const result = await Pin.find({ user: username });
       return result;
     }

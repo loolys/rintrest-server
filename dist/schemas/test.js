@@ -1,0 +1,6 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = "\n  type Cat {\n    _id: String!\n    name: String!\n  }\n\n  type Pin {\n    _id: String!\n    image: String!\n    text: String!\n    user: String!\n    likeCount: Int!\n    likes: [String]\n  }\n\n\n  type User {\n    success: Boolean!\n    username: String!\n    password: String!\n    error: Error\n  }\n\n  type Error {\n    path: String!\n    message: String\n  }\n\n  type LoginResponse {\n    success: Boolean!\n    token: String\n    error: Error\n  }\n\n  type Query {\n    allCats: [Cat!]!\n    allPins: [Pin]!\n    usersPins(header: String!): [Pin!]!\n  }\n\n  type Mutation {\n    createCat(name: String!): Cat!\n    createPin(image: String!,\n      text: String!,\n      user: String!,\n      likeCount: Int): Pin!\n    createUser(username: String!,\n      password: String!\n    ): User!\n    loginUser(username: String!,\n      password: String!): LoginResponse!\n    likePin(username: String!, id: String!): Pin!\n  }\n";

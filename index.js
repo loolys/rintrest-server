@@ -1,9 +1,11 @@
+require("babel-polyfill");
 import express from "express";
 import bodyParser from "body-parser";
 import { graphqlExpress } from "apollo-server-express";
 import { makeExecutableSchema } from "graphql-tools";
 import { graphiqlExpress } from "apollo-server-express";
 import mongoose from "mongoose";
+import path from "path";
 require("dotenv/config");
 
 import typeDefs from "./schemas/test";
@@ -20,7 +22,7 @@ mongoose.connect("mongodb://localhost/rintrest");
 
 const Cat = mongoose.model("Cat", { name: String });
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 const app = express();
 
@@ -38,4 +40,10 @@ app.use(
   })
 );
 
-app.listen(PORT);
+app.use(express.static("build"));
+
+app.route("/*").get((req, res) => {
+  res.sendFile(path.join(__dirname + "/build" + "/index.html"));
+});
+
+app.listen(PORT, () => console.log("running"));
