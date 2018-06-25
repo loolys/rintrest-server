@@ -18,7 +18,9 @@ const schema = makeExecutableSchema({
   resolvers
 });
 
-mongoose.connect("mongodb://localhost/rintrest");
+const connectString = process.env.MONGODB_URI || "mongodb://localhost/rintrest";
+
+mongoose.connect(connectString);
 
 const Cat = mongoose.model("Cat", { name: String });
 
